@@ -54,7 +54,7 @@ def get_graph(id_entity, nb_layer=2):
 					for qualifiers in mainsnak["qualifiers"]:
 						if "datavalue" in mainsnak["qualifiers"][qualifiers][0]:
 							if "value" in mainsnak["qualifiers"][qualifiers][0]["datavalue"]:
-								if "id" in mainsnak["qualifiers"][qualifiers][0]["datavalue"]["value"]:
+								if "id" in mainsnak["qualifiers"][qualifiers][0]["datavalue"]["value"] and type(mainsnak["qualifiers"][qualifiers][0]["datavalue"]["value"]) is dict:
 									right_part2 = mainsnak["qualifiers"][qualifiers][0]["datavalue"]["value"]["id"]
 									graph.add((ent_idx,relation,qualifiers,right_part2))
 									add_entity(qualifiers, dic_entity)
@@ -83,8 +83,26 @@ def get_graph(id_entity, nb_layer=2):
 def convert_id2_entity(ent_idx, jline):
 	return jline["entities"][ent_idx]["labels"]["en"]["value"]
 
+def write_file(graph,dic_entity):
+	fi = open("graph.txt","w")
+	for g in graph:
+		for elt in g:
+			fi.write(elt)
+			fi.write("\t")
+		fi.write("\n")
+	fi.close()
+
+	fi = open("dic_entity.txt","w")
+	for entity in dic_entity:
+		fi.write(entity)
+		fi.write("\t")
+		fi.write(dic_entity[entity])
+		fi.write("\n")
+	fi.close()
+
 
 if __name__ == '__main__':
+	"""
 	graph,dic_entity = get_graph("Q3244512", nb_layer=2)
 	G = nx.DiGraph()
 
@@ -98,7 +116,10 @@ if __name__ == '__main__':
 
 	nx.draw(G,with_labels=True)
 	plt.savefig("examples.jpg")
+	"""
 
+	graph,dic_entity = get_graph("Q3244512", nb_layer=2)
+	write_file(graph,dic_entity)
 
 
 
