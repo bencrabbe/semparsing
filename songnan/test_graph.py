@@ -60,8 +60,6 @@ def get_graph_1(id_entity):
 	return (graph,set_entity)	
 
 
-
-
 def get_graph_2(id_entity):
 
 	def treat_jline(jline):
@@ -172,52 +170,97 @@ class PRIterator:
 		return page_rank
 
 
+def pr_2_entity(file):
+	fi = open(file,"r").read().split("\n")
+	fi = [line.split("\t") for line in fi if line]
+	for a,b in fi:
+		a = convert_id2_entity(a)
+		print(a)
+
+
+def exist_subject(graph):
+	
 
 if __name__ == '__main__':
-	"""
-	graph,set_entity = get_graph_2("Q3244512")
-	G = nx.DiGraph()
-	print(len(set_entity))
-	print(len(graph))
 	
-	#dic_entity = {}
-	#for entity in set_entity:
-	#	dic_entity[entity] = convert_id2_entity(entity)
-	#print("dico fini")
+	"""
+	graph,set_entity = get_graph_1("Q34660")
+	G = nx.DiGraph()
+
+	dic_entity = {}
+	for entity in set_entity:
+		dic_entity[entity] = convert_id2_entity(entity)
 	
 	gr = []
 	for g in graph:
-		#a = dic_entity[g[0]] + " (" + g[0] + ")" # Q1
-		#b = dic_entity[g[-1]] + " (" + g[-1] + ")" # Q2
-		#c = dic_entity[g[1]] + " (" + g[1] + ")" # P
-		a = g[0]
-		b = g[-1]
-		c = g[1]
-		#gr.append((a,c))
-		#gr.append((c,b))
-		gr.append((a,b))
+		if len(g) == 3:
+			a = dic_entity[g[0]] + " (" + g[0] + ")" # Q1
+			b = dic_entity[g[-1]] + " (" + g[-1] + ")" # Q2
+			c = dic_entity[g[1]] + " (" + g[1] + ")" # P
+			#a = g[0]
+			#b = g[-1]
+			#c = g[1]
+			#gr.append((a,c))
+			#gr.append((c,b))
+			gr.append((a,b))
+		else:
+			a = dic_entity[g[0]] + " (" + g[0] + ")" # Q1
+			b = dic_entity[g[-1]] + " (" + g[-1] + ")" # Q2
+			c = dic_entity[g[1]] + " (" + g[1] + ")" # P1
+			d = dic_entity[g[2]] + " (" + g[2] + ")" # P2
+			#a = g[0]
+			#b = g[-1]
+			#c = g[1]
+			#d = g[2]
+			#gr.append((a,c))
+			#gr.append((c,d))
+			#gr.append((d,b))
+			gr.append((a,b))
 
-	#G.add_edges_from(gr)
 	G.add_edges_from(gr)
 
 	plt.figure(figsize=(14.2, 24.2)) 
 	nx.draw(G,with_labels=True)
-	plt.savefig("examples.jpg")
+	plt.savefig("1.1.jpg")	
 	"""
 
-	list_graph, nodes = get_graph_2("Q3244512")
+	"""
+	list_graph, nodes = get_graph_1("Q34660")
 	dg = Graph(list(nodes))
 	for x in list_graph:
-		dg.add_edge(x[0],x[-1])
-		#dg.add_edge(x[0],x[1])
-		#dg.add_edge(x[1],x[-1])
+		if len(x) == 3:
+			#dg.add_edge(x[0],x[-1]) # Q1,Q2
+			dg.add_edge(x[0],x[1])  # Q1,P
+			dg.add_edge(x[1],x[-1]) # P,Q2
+		else:
+			#dg.add_edge(x[0],x[-1]) # Q1,Q2
+			dg.add_edge(x[0],x[1])  # Q1,P1
+			dg.add_edge(x[1],x[2])  # P1,P2
+			dg.add_edge(x[2],x[-1]) # P2,Q2
 
 	pr = PRIterator(dg)
 	page_ranks = pr.page_rank()
 	page_ranks = sorted(page_ranks.items(),key=lambda item:item[1], reverse=True)
-	fi = open("pr.txt","w")
+	fi = open("pr_1.2.txt","w")
 	for cle,valeur in page_ranks:
 		fi.write(cle)
 		fi.write("\t")
 		fi.write(str(valeur))
 		fi.write("\n")
+	"""
+
+	"""
+	print("===============================1.1===============================")
+	pr_2_entity("pr_1.1.txt")
+	print("===============================1.2===============================")
+	pr_2_entity("pr_1.2.txt")
+	print("===============================1.3===============================")
+	pr_2_entity("pr_1.3.txt")
+	print("===============================2.1===============================")
+	pr_2_entity("pr_2.1.txt")
+	print("===============================2.2===============================")
+	pr_2_entity("pr_2.2.txt")
+	print("===============================2.3===============================")
+	pr_2_entity("pr_2.3.txt")
+	"""
+
