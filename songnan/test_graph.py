@@ -71,6 +71,12 @@ def get_graph_2(id_entity):
 		ent_idx = str(jline["entities"].keys())[12:-3] # id of the entity/relation
 		claims = jline["entities"][ent_idx]["claims"]
 		claims_keys = jline["entities"][ent_idx]["claims"].keys()
+
+		if ent_idx[0]=="P":
+			if "P1629" not in claims_keys:
+				print(ent_idx)
+				print("oops")
+		
 		for relation in claims_keys:
 			for mainsnak in claims[relation]:
 				if "datavalue" in mainsnak["mainsnak"]: 
@@ -93,6 +99,7 @@ def get_graph_2(id_entity):
 									set_entity.add(relation)
 									set_entity.add(qualifiers)
 									set_entity.add(right_part2)
+
 
 	base_url = "https://www.wikidata.org/w/api.php?action=wbgetentities&ids=$$$&format=json"
 	entity_url = base_url.replace("$$$",id_entity)
@@ -178,11 +185,10 @@ def pr_2_entity(file):
 		print(a)
 
 
-def exist_subject(graph):
-	
 
 if __name__ == '__main__':
-	
+	graph, set_entity = get_graph_2("Q34660")
+
 	"""
 	graph,set_entity = get_graph_1("Q34660")
 	G = nx.DiGraph()
