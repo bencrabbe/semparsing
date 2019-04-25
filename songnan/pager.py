@@ -21,8 +21,8 @@ def transfer_pagerank(pagerankfilename, dico_c2e, outputfilename):
 	for line in prstream:
 		if line:
 			try:
-				idx,page_rank = line.split(" ")
-				outputstream.write(dico_c2e[idx] + " " + page_rank + "\n")
+				idx,page_rank = line.split("\t")
+				outputstream.write(dico_c2e[int(idx)+1] + " " + page_rank + "\n")
 			except Exception as e:
 				print('@@@',type(e),e)
 				
@@ -41,5 +41,5 @@ if __name__ == '__main__':
 	outputfilename1 = "pagerank_v1.txt"
 	outputfilename2 = "pagerank_v2.txt"
 
-	transfer_num2idx(pagerankfilename1, dico_c2e, outputfilename1)
-	transfer_num2idx(pagerankfilename2, dico_c2e, outputfilename2)
+	transfer_pagerank(pagerankfilename1, dico_c2e, outputfilename1)
+	transfer_pagerank(pagerankfilename2, dico_c2e, outputfilename2)
