@@ -97,7 +97,7 @@ def extract_entities(dumpfile,outfile,page_ranks,lang='fr'):
 	print('Reading done...')
 
 
-def get_first_entities(jsonfilename,outfilename,max_size=1000000):
+def make_dictionary(jsonfilename,outfilename,max_size=1000000):
 	jsonstream = open(jsonfilename)
 	outstream = open(outfilename,"w")
 	list_entities = []
@@ -153,7 +153,7 @@ def creat_variants(dico_labelaliases):
 
 	return set_result
 
-def make_dictionary(first_entfilename):
+def make_variantes(first_entfilename):
 	"""
 	Builds the dictionary from an entity list.
 	For a given entry, entities are sorted according to elist's order
@@ -227,53 +227,23 @@ def dump_dictionary(D,dico_bridging,dictfilename='entities_dict.json'):
 
 
 if __name__ == '__main__':
-	#dumpname = "wikidata-20180101-all.json"
-	#dumpname = "wikidata-20180101-all.json.bz2"
-
-	"""
-	prfilename1 = "pagerank_v1.txt"
-	outfile1 = "dico_entities_1.json"
-	pr_dict1 = page_rank_dict(prfilename1)
-	extract_entities(dumpname, outfile1, pr_dict1, lang="fr")
-	"""
-
-	"""
-	prfilename2 = "pagerank_v2.txt"
-	outfile2 = "dico_entities_2.json"
-	pr_dict2 = page_rank_dict(prfilename2)
-	extract_entities(dumpname, outfile2, pr_dict2, lang="fr")
-	"""
-
-	"""
 	jsonfilename1 = "dico_entities_1.json"
-	outfilename1 = "1m_ent_1.json"
-	get_first_entities(jsonfilename1,outfilename1,max_size=1000000)
+	outfilename1 = "littledico1.json"
+	make_dictionary(jsonfilename1,outfilename1,max_size=1000000)
 	print("extract 1 million first entities done (ordered, version 1)")
-	"""
-	"""
+
 	jsonfilename2 = "dico_entities_2.json"
-	outfilename2 = "1m_ent_2.json"
-	get_first_entities(jsonfilename2,outfilename2,max_size=1000000)
+	outfilename2 = "littledico2.json"
+	make_dictionary(jsonfilename2,outfilename2,max_size=1000000)
 	print("extract 1 million first entities done (ordered, version 2)")
-	"""
-	
-	"""
-	dictfilename1 = "entities_dict1.json"
-	D1, dico_bridging1 = make_dictionary("1m_ent_1.json")
-	dump_dictionary(D1, dico_bridging1, dictfilename1)
-	print("dump dico1 done")
-	dictfilename2 = "entities_dict2.json"
-	D2, dico_bridging2 = make_dictionary("1m_ent_2.json")
-	dump_dictionary(D2, dico_bridging2, dictfilename2)
-	print("dump dico2 done")
-	"""
 
 	dictfilename1 = "dico_quan1.json"
-	D1, dico_bridging1 = make_dictionary("1m_ent_1.json")
+	D1, dico_bridging1 = make_variantes("littledico1.json")
 	dump_dictionary(D1, dico_bridging1, dictfilename1)
 	print("dump dico1 done")
+
 	dictfilename2 = "dico_quan2.json"
-	D2, dico_bridging2 = make_dictionary("1m_ent_2.json")
+	D2, dico_bridging2 = make_variantes("littledico2.json")
 	dump_dictionary(D2, dico_bridging2, dictfilename2)
 	print("dump dico2 done")
 

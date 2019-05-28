@@ -9,6 +9,9 @@ import json
 from lambda_parser import FuncParser
 from functional_core import TypeSystem
 from wikidata_model import WikidataModelInterface,NamingContextWikidata
+import pytrie
+from pytrie import SortedStringTrie as Trie
+
 
 class Token:
 	
@@ -204,10 +207,11 @@ class DefaultLexer:
 		
 		#3. Attempts to match MWE
 		if self.mwe_regex:
-			match = self.mwe_regex.match(self.inner_bfr,pos=self.idx)
-			if match:
-				token       = self.inner_bfr[self.idx:match.end()]
-				self.idx    = match.end()
+			match = self.mwe_regex.longest_prefix_value(self.inner_bfr[self.idx:], -1)
+			if match != -1:
+				match = self.mwe_regex.longest_prefix(self.inner_bfr[self.idx:])
+				token       = self.inner_bfr[self.idx:( self.idx+len(match) )]
+				self.idx    = ( self.idx+len(match) )
 				entity_list = self.entity_dict.get(token, [] )
 				return ( token, entity_list ) 
  
@@ -276,11 +280,12 @@ class DefaultLexer:
 		self.wsp_regex = re.compile("([ \n\s\t]+)")
 		self.full_regex = re.compile("([^ \n\s\t]+)")
 
-	def compile_mwe(self,filename,max_vocab_size=1150000):
+	def compile_mwe(self,filename,max_vocab_size=2459136):
+		# max_vocab_size=4459136
 		self.entity_dict = {}
 		if filename:
 			istream = open(filename)
-			keylist = []
+			keylist = {}
 			idx = 0
 			line = istream.readline()
 			while line:
@@ -289,13 +294,14 @@ class DefaultLexer:
 				vallist = list(line['entity_list'])
 				self.entity_dict[key] = vallist
 				if ' ' in key:
-				   keylist.append(key)
+				   keylist[key] = idx
 				idx += 1
 				if idx > max_vocab_size:
 				   break
 				line = istream.readline()
 
-			self.mwe_regex = re.compile(r'('+'|'.join(['%s'%(key,) for key in sorted(keylist,reverse=True,key=lambda x:len(x))])+')')
+			#self.mwe_regex = sorted(keylist,reverse=True,key=lambda x:len(x))
+			self.mwe_regex = Trie(keylist)
 			istream.close() 
 		else:
 			self.mwe_regex = None
