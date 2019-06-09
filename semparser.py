@@ -725,8 +725,11 @@ class CCGParser :
                 except ParseFailureError as p:
                     print(p)
                     print( )
-                print('Epoch',e,'LogLikelihood =',LL) 
-            res = self.eval_one(beam_size,X,Y)
+                print('Epoch',e,'LogLikelihood =',LL)
+            try:
+                res = self.eval_one(beam_size,X,Y)
+            except ParseFailureError as p:
+                corr = False
             corr += res
             print('\ncorrect' if corr else '\nincorrect')
         print('overall accurracy (#parse success)',corr/N)
