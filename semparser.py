@@ -3,7 +3,8 @@ from math import exp,log
 from functional_core import *
 from lambda_parser import FuncParser
 from wikidata_model import WikidataModelInterface, NamingContextWikidata,Assignation
-from lexer import DefaultLexer
+#from lexer import DefaultLexer
+from lexerpytrie_quan import DefaultLexer
 from SparseWeightVector import SparseWeightVector
 from constree import ConsTree
 
@@ -602,9 +603,7 @@ class CCGParser :
             raise ParseFailureError(len(derivations_list),Z,toklist)
         
         derivations_probs   = [ s / Z for s in derivations_scores ]
-        
-            
-
+                
         #assess correct / incorrect results
         refset   = set(ref_values)
         cflags   = [is_correct(toklist,deriv,dtype,refset,len(final_beam) > 0) for deriv,dtype in derivations_list]
@@ -668,9 +667,10 @@ class CCGParser :
             
 if __name__ == '__main__':
 
-    lex = DefaultLexer('strong-cpd.dic',entity_file='entities_dict.txt')
+    #lex = DefaultLexer('strong-cpd.dic',entity_file='entities_dict.txt')
+    lex = DefaultLexer('strong-cpd.dic',entity_file='dico_quan1.json')
     p = CCGParser(lex)
-    #p.train_model('microquestions.json.txt',beam_size=500,lr=1.0,epochs=20)
-    p.train_model('sommeproba0.json',beam_size=500,lr=1.0,epochs=20)
+    p.train_model('microquestions.json.txt',beam_size=500,lr=1.0,epochs=20)
+    #p.train_model('sommeproba0.json',beam_size=500,lr=1.0,epochs=20)
     #p.train_model('devraitmarcher.json',beam_size=500,lr=1.0,epochs=20)
     

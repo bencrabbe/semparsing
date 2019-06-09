@@ -119,8 +119,8 @@ class DefaultLexer:
         Returns:
            A list of Token objects or a couple (list of Token, list of ref answers)
         """
-        jline   = json.loads(line)     
-        query   = jline['utterance_fr']  
+        jline   = json.loads(line)
+        query   = jline['utterance']  
 
         #Segmentation
         toklist = self.tokenize_line(query)
