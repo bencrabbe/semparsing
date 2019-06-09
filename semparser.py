@@ -3,8 +3,8 @@ from math import exp,log
 from functional_core import *
 from lambda_parser import FuncParser
 from wikidata_model import WikidataModelInterface, NamingContextWikidata,Assignation
-#from lexer import DefaultLexer
-from lexerpytrie_quan import DefaultLexer
+from lexer import DefaultLexer
+#from lexerpytrie_quan import DefaultLexer
 from SparseWeightVector import SparseWeightVector
 from constree import ConsTree
 
@@ -563,7 +563,49 @@ class CCGParser :
             if len(dtype) == 1 and dtype[0] == 't':
                 return self.make_query(deriv,toklist)
         return [ ]
-    
+
+    def eval_one(self,K,toklist,ref_values):
+        #like sgd train except it does eval.
+        def is_correct(toklist,derivation,dtype,refset,success):
+            """
+            Assess the correctness of a question/answer couple.
+            @param toklist : a list of tokens
+            @param derivation : a derivation
+            @param dtype : the type of the derivation
+            @param refset : the set of correct answers to the question
+            @param success :  a boolean indicating if the parse completed normally or got trapped early
+            """ 
+            if not derivation or not dtype or not success:
+                return False
+            #checks for type
+            if not (len(dtype) == 1 and dtype[0] == 't'):
+                return False
+            sys.stdout.write('.')
+            sys.stdout.flush()
+            answer = self.make_query(derivation,toklist)
+            for elt in answer:
+                if elt in refset:
+                    return True
+            return False
+        
+        final_beam          = self.predict_beam(K,toklist)
+        derivations_list    = [self.make_derivation(beam_cell) for beam_cell in final_beam]
+        derivations_scores  = [d[-1][0][2] for d,dtype in derivations_list]
+        Z                   = sum(derivations_scores)
+        if Z == 0:
+            raise ParseFailureError(len(derivations_list),Z,toklist)
+        
+        derivations_probs   = [ s / Z for s in derivations_scores ]
+                
+        #assess correct / incorrect results
+        refset   = set(ref_values)
+        cflags   = [is_correct(toklist,deriv,dtype,refset,len(final_beam) > 0) for deriv,dtype in derivations_list]
+
+        for (deriv,dtype),flag,prob in sorted(zip(derivations_list,cflags,derivations_probs),key = lambda x: x[2] , reverse=True):
+            return flag
+        
+        return False
+        
     def sgd_train_one(self,K,toklist,ref_values,lr=0.1):
         """
         Performs an SGD update on a single example (uses a CRF style objective)
@@ -664,13 +706,39 @@ class CCGParser :
                     
             print('Epoch',e,'LogLikelihood =',LL) 
 
-            
+    def eval_songnan(self,data_filename,lr=0.1,epochs=50,beam_size=1):
+
+        #read input data
+        istream = open(data_filename)
+        xylines = [line for line in istream]
+        istream.close()
+
+        corr      = 0
+        N         = len(xylines)
+        #train model
+        for xyline in xylines:
+            X,Y = self.lexer.tokenize_json(xyline,ref_answer=True)
+            LL  = 0
+            for e in range(epochs):
+                try:
+                    LL = self.sgd_train_one(beam_size,X,Y,lr=lr)
+                except ParseFailureError as p:
+                    print(p)
+                    print( )
+                print('Epoch',e,'LogLikelihood =',LL) 
+            res = self.eval_one(beam_size,X,Y)
+            corr += res
+            print('\ncorrect' if corr else '\nincorrect')
+        print('overall accurracy (#parse success)',corr/N)
+
+                
 if __name__ == '__main__':
 
-    #lex = DefaultLexer('strong-cpd.dic',entity_file='entities_dict.txt')
-    lex = DefaultLexer('strong-cpd.dic',entity_file='dico_quan1.json')
+    lex = DefaultLexer('strong-cpd.dic',entity_file='entities_dict.txt')
+    #lex = DefaultLexer('strong-cpd.dic',entity_file='dico_quan1.json')
     p = CCGParser(lex)
-    p.train_model('microquestions.json.txt',beam_size=500,lr=1.0,epochs=20)
+    #p.train_model('microquestions.json.txt',beam_size=500,lr=1.0,epochs=20)
+    p.eval_songnan('microquestions.json.txt',beam_size=500,lr=1.0,epochs=5)
     #p.train_model('sommeproba0.json',beam_size=500,lr=1.0,epochs=20)
     #p.train_model('devraitmarcher.json',beam_size=500,lr=1.0,epochs=20)
     
