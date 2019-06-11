@@ -564,8 +564,7 @@ class CCGParser :
                 return self.make_query(deriv,toklist)
         return [ ]
 
-    def eval_one(self,K,toklist,ref_values):
-        
+    def eval_one(self,K,toklist,ref_values): 
         #like sgd train except it does eval.
         def is_correct(toklist,derivation,dtype,refset,success):
             """
@@ -635,6 +634,8 @@ class CCGParser :
             sys.stdout.write('.')
             sys.stdout.flush()
             answer = self.make_query(derivation,toklist)
+            print('Ref answers',refset)
+            print('Pred answers',answer)
             for elt in answer:
                 if elt in refset:
                     return True
