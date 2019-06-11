@@ -125,7 +125,7 @@ class DefaultLexer:
 		jline   = json.loads(line)     
 		query   = jline['utterance_fr']  
 
-		#Segmentation
+		#Segmentation 
 		toklist = self.tokenize_line(query)
 
 		#Linking & POS tagging (pos not done)
