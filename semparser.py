@@ -634,7 +634,7 @@ class CCGParser :
             sys.stdout.write('.')
             sys.stdout.flush()
             answer = self.make_query(derivation,toklist)
-            print('Ref answers',refset)
+            print('Ref answers',refset) 
             print('Pred answers',answer)
             for elt in answer:
                 if elt in refset:
