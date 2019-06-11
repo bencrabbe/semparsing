@@ -115,7 +115,7 @@ class DefaultLexer:
 
 		TODO : integrate a POS Tagger in the lexer
 
-		Args:
+		Args: 
 		   line     (string): a json line from webquestions style data set
 		KwArgs:
 		   ref_answer (bool): returns the reference answer too
