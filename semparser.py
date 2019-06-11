@@ -706,7 +706,6 @@ class CCGParser :
                 except ParseFailureError as p:
                     print(p)
                     print( )
-                    
             print('Epoch',e,'LogLikelihood =',LL) 
 
     def eval_songnan(self,data_filename,lr=0.1,epochs=50,beam_size=1):
