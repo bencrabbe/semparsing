@@ -172,7 +172,7 @@ class DefaultLexer:
 					answ = answ[1:-1]
 				answer_list.append(answ)
 
- 		print('Answ',answer_list)
+		print('Answ',answer_list)
 		return (tokens,answer_list)
 		 
 	def tokenize_line(self,line):
