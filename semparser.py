@@ -3,8 +3,8 @@ from math import exp,log
 from functional_core import *
 from lambda_parser import FuncParser
 from wikidata_model import WikidataModelInterface, NamingContextWikidata,Assignation
-from lexer import DefaultLexer
-#from lexerpytrie_quan import DefaultLexer
+#from lexer import DefaultLexer
+from lexerpytrie_quan import DefaultLexer
 from SparseWeightVector import SparseWeightVector
 from constree import ConsTree
 
@@ -515,7 +515,7 @@ class CCGParser :
         idx   = 0  
         stack = [ ]  
         for config,action in derivation:
-            if action == None:
+            if action == None: 
                 break  #deriv is terminated
             elif action.act_type == SRAction.SHIFT:
                 lf = toklist[idx].logical_form.copy()
@@ -647,7 +647,7 @@ class CCGParser :
         derivations_probs   = [ s / Z for s in derivations_scores ]
                 
         #assess correct / incorrect results
-        refset   = set(ref_values)
+        refset   = set([str(val) for val in ref_values])
         cflags   = [is_correct(toklist,deriv,dtype,refset,len(final_beam) > 0) for deriv,dtype in derivations_list]
         print('\n')
         #debug
@@ -678,7 +678,7 @@ class CCGParser :
         
         #update
         self.weights += grad
-        return LL
+        return LL 
  
     def train_model(self,data_filename,lr=0.1,epochs=50,beam_size=1):
         """
@@ -725,8 +725,11 @@ class CCGParser :
                 except ParseFailureError as p:
                     print(p)
                     print( )
-                print('Epoch',e,'LogLikelihood =',LL) 
-            res = self.eval_one(beam_size,X,Y)
+                print('Epoch',e,'LogLikelihood =',LL)
+            try:
+                res = self.eval_one(beam_size,X,Y)
+            except ParseFailureError as p:
+                corr = False
             corr += res
             print('\ncorrect' if corr else '\nincorrect')
         print('overall accurracy (#parse success)',corr/N)
@@ -734,8 +737,8 @@ class CCGParser :
                 
 if __name__ == '__main__':
 
-    lex = DefaultLexer('strong-cpd.dic',entity_file='entities_dict.txt')
-    #lex = DefaultLexer('strong-cpd.dic',entity_file='dico_quan1.json')
+    #lex = DefaultLexer('strong-cpd.dic',entity_file='entities_dict.txt')
+    lex = DefaultLexer('strong-cpd.dic',entity_file='dico_quan1.json')
     p = CCGParser(lex)
     #p.train_model('microquestions.json.txt',beam_size=500,lr=1.0,epochs=20)
     p.eval_songnan('microquestions.json.txt',beam_size=500,lr=1.0,epochs=5)

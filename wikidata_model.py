@@ -63,7 +63,9 @@ class WikidataQuery:
                bd:serviceParam wikibase:language "fr" .
             }
         } LIMIT %d
-        """%(WikidataQuery.ENTITY_PREFIX,WikidataQuery.PROPERTY_PREFIX,' '.join(['%sLabel'%(v,) for v in  query_vars]),generated_query,WikidataQuery.MAX_QUERY_RESULTS)
+        """%(WikidataQuery.ENTITY_PREFIX,WikidataQuery.PROPERTY_PREFIX,' '.join(['%s'%(v,) for v in  query_vars]),generated_query,WikidataQuery.MAX_QUERY_RESULTS)
+
+    #%(WikidataQuery.ENTITY_PREFIX,WikidataQuery.PROPERTY_PREFIX,' '.join(['%sLabel'%(v,) for v in  query_vars]),generated_query,WikidataQuery.MAX_QUERY_RESULTS)
 
     @staticmethod 
     def make_count_query(query_vars,generated_query):
@@ -117,7 +119,7 @@ class WikidataQuery:
             sparql.setQuery(query_string)
             sparql.setReturnFormat(JSON)
             results = sparql.query().convert()
-            return results['boolean']
+            return results['boolean'] 
         elif qtype == 'COUNT':
             if not answer_vars:  #recovery for queries without identified focus
                 answer_vars = ['*']
@@ -143,7 +145,7 @@ class WikidataQuery:
                 sparql.setReturnFormat(JSON)
                 sparql.setTimeout(timeout)
                 results = sparql.query().convert()
-                #extract tuples
+                #extract tuples 
                 for binding in results['results']['bindings']:
                     solutions.append( [ (varname,binding[varname]['value'].split('/')[-1]) for varname in binding.keys() ])
             except Exception as e:
