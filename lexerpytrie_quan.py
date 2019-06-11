@@ -163,7 +163,7 @@ class DefaultLexer:
 		#Reference answers
 		if ref_answer:
  			janswer     = jline['targetValue'].strip()
-  			answer_list = []
+			answer_list = []
  			for answer in janswer.split():
  				 answer_list.append(answ)
 			#janswer     = jline['targetValue'].strip()
