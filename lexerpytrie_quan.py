@@ -165,7 +165,7 @@ class DefaultLexer:
  			janswer     = jline['targetValue'].strip()
  			answer_list = []
  			for answer in janswer.split():
- 				 answer_list.append(answ)
+ 				 answer_list.append(answer)
 			#janswer     = jline['targetValue'].strip()
 			#janswer      = janswer[6:-1] #strips outer (list ... )
 			#answer_list = []
