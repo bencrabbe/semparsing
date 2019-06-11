@@ -744,7 +744,7 @@ if __name__ == '__main__':
     lex = DefaultLexer('strong-cpd.dic',entity_file='dico_quan1.json')
     p = CCGParser(lex)
     #p.train_model('microquestions.json.txt',beam_size=500,lr=1.0,epochs=20)
-    p.eval_songnan('microquestions.json.txt',beam_size=500,lr=1.0,epochs=5)
+    p.eval_songnan('microquestions.json',beam_size=500,lr=1.0,epochs=5)
     #p.train_model('sommeproba0.json',beam_size=500,lr=1.0,epochs=20)
     #p.train_model('devraitmarcher.json',beam_size=500,lr=1.0,epochs=20)
     
