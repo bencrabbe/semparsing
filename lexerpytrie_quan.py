@@ -162,15 +162,18 @@ class DefaultLexer:
   
 		#Reference answers
 		if ref_answer:
-			janswer     = jline['targetValue'].strip()
-			janswer      = janswer[6:-1] #strips outer (list ... )
-			answer_list = []
-			pattern = re.compile(r'\(description ([^\)]+)\)')
-			for answ_match in pattern.finditer(janswer):
-				answ = answ_match.group(1)
-				if answ[0] == '"' and answ[-1] == '"':
-					answ = answ[1:-1]
-				answer_list.append(answ)
+            janswer     = jline['targetValue'].strip()
+            for answer in janswer.split():
+                answer_list.append(answ)
+			#janswer     = jline['targetValue'].strip()
+			#janswer      = janswer[6:-1] #strips outer (list ... )
+			#answer_list = []
+			#pattern = re.compile(r'\(description ([^\)]+)\)')
+			#for answ_match in pattern.finditer(janswer):
+			#	answ = answ_match.group(1)
+			#	if answ[0] == '"' and answ[-1] == '"':
+			#		answ = answ[1:-1]
+			#	answer_list.append(answ)
 
 		print('Answ',answer_list)
 		return (tokens,answer_list)
