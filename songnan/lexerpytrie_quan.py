@@ -119,7 +119,7 @@ class DefaultLexer:
 		   line     (string): a json line from webquestions style data set
 		KwArgs:
 		   ref_answer (bool): returns the reference answer too
-		Returns:
+		Returns: 
 		   A list of Token objects or a couple (list of Token, list of ref answers)
 		"""
 		jline   = json.loads(line)     

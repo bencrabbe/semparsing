@@ -115,17 +115,17 @@ class DefaultLexer:
 
 		TODO : integrate a POS Tagger in the lexer
 
-		Args:
+		Args: 
 		   line     (string): a json line from webquestions style data set
 		KwArgs:
 		   ref_answer (bool): returns the reference answer too
-		Returns:
+		Returns: 
 		   A list of Token objects or a couple (list of Token, list of ref answers)
 		"""
 		jline   = json.loads(line)     
 		query   = jline['utterance_fr']  
 
-		#Segmentation
+		#Segmentation 
 		toklist = self.tokenize_line(query)
 
 		#Linking & POS tagging (pos not done)
@@ -171,6 +171,7 @@ class DefaultLexer:
 				if answ[0] == '"' and answ[-1] == '"':
 					answ = answ[1:-1]
 				answer_list.append(answ)
+        print('Answ',answer_list)
 		return (tokens,answer_list)
 		 
 	def tokenize_line(self,line):
@@ -280,7 +281,7 @@ class DefaultLexer:
 		self.wsp_regex = re.compile("([ \n\s\t]+)")
 		self.full_regex = re.compile("([^ \n\s\t]+)")
 
-	def compile_mwe(self,filename,max_vocab_size=2459136):
+	def compile_mwe(self,filename,max_vocab_size=500913):
 		# max_vocab_size=4459136
 		self.entity_dict = {}
 		if filename:
