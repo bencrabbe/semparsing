@@ -161,7 +161,7 @@ class DefaultLexer:
 			tokens.append( Token(tokform,"NOTAG",qmacro,qlogform)) 
   
 		#Reference answers
-		if ref_answer:
+        if ref_answer:
 			janswer     = jline['targetValue'].strip()
 			janswer      = janswer[6:-1] #strips outer (list ... )
 			answer_list = []
@@ -173,7 +173,7 @@ class DefaultLexer:
 				answer_list.append(answ)
 
         print('Answ',answer_list)
-		return (tokens,answer_list)
+        return (tokens,answer_list)
 		 
 	def tokenize_line(self,line):
 		"""
