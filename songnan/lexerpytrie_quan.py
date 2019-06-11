@@ -110,8 +110,11 @@ class DefaultLexer:
 		"""
 		Tokenizes a json utterance. The json is expected to be
 		structured using WebQuestions schema.
+
 		Wraps the lexer internals into a Token list.
+
 		TODO : integrate a POS Tagger in the lexer
+
 		Args:
 		   line     (string): a json line from webquestions style data set
 		KwArgs:
