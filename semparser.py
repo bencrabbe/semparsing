@@ -735,7 +735,7 @@ class CCGParser :
         print('overall accurracy (#parse success)',corr/N)
 
                 
-if __name__ == '__main__':
+if __name__ == '__main__': 
 
     #lex = DefaultLexer('strong-cpd.dic',entity_file='entities_dict.txt')
     lex = DefaultLexer('strong-cpd.dic',entity_file='dico_quan1.json')
