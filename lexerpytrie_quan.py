@@ -163,8 +163,8 @@ class DefaultLexer:
 		#Reference answers
 		if ref_answer:
  			janswer     = jline['targetValue'].strip()
-			for answer in janswer.split():
-				 answer_list.append(answ)
+ 			for answer in janswer.split():
+ 				 answer_list.append(answ)
 			#janswer     = jline['targetValue'].strip()
 			#janswer      = janswer[6:-1] #strips outer (list ... )
 			#answer_list = []
