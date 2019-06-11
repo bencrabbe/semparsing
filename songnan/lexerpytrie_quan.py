@@ -281,7 +281,7 @@ class DefaultLexer:
 		self.wsp_regex = re.compile("([ \n\s\t]+)")
 		self.full_regex = re.compile("([^ \n\s\t]+)")
 
-	def compile_mwe(self,filename,max_vocab_size=2459136):
+	def compile_mwe(self,filename,max_vocab_size=500913):
 		# max_vocab_size=4459136
 		self.entity_dict = {}
 		if filename:
