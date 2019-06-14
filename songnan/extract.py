@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 import bz2,json,sys,re
-from lexer import DefaultLexer
+from lexerpytrie_quan import DefaultLexer
 
 def page_rank_dict(pagerankfilename):
 	"""
