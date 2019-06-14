@@ -571,8 +571,8 @@ class CCGParser :
             Assess the correctness of a question/answer couple.
             @param toklist : a list of tokens
             @param derivation : a derivation
-            @param dtype : the type of the derivation
-            @param refset : the set of correct answers to the question
+            @param dtype   : the type of the derivation
+            @param refset  : the set of correct answers to the question
             @param success :  a boolean indicating if the parse completed normally or got trapped early
             """ 
             if not derivation or not dtype or not success:
@@ -593,7 +593,7 @@ class CCGParser :
         final_beam          = self.predict_beam(K,toklist)
         derivations_list    = [self.make_derivation(beam_cell) for beam_cell in final_beam]
         derivations_scores  = [d[-1][0][2] for d,dtype in derivations_list]
-        Z                   = sum(derivations_scores)
+        Z                   = sum(derivations_scores) 
         if Z == 0:
             raise ParseFailureError(len(derivations_list),Z,toklist)
         
@@ -714,12 +714,12 @@ class CCGParser :
         xylines = [line for line in istream]
         istream.close()
 
-        corr      = 0
         N         = len(xylines)
         #train model
         for xyline in xylines:
             X,Y = self.lexer.tokenize_json(xyline,ref_answer=True)
             LL  = 0
+            corr      = 0
             for e in range(epochs):
                 try:
                     LL = self.sgd_train_one(beam_size,X,Y,lr=lr)
