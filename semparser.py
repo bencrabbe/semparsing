@@ -732,7 +732,7 @@ class CCGParser :
             except ParseFailureError as p:
                 res = False
             corr += res
-            print('\ncorrect' if corr else '\nincorrect')
+            print('\ncorrect' if res else '\nincorrect')
         print('overall accurracy (#parse success)',corr/N)
 
                 
