@@ -715,11 +715,11 @@ class CCGParser :
         istream.close()
 
         N         = len(xylines)
+        corr      = 0
         #train model
         for xyline in xylines:
             X,Y = self.lexer.tokenize_json(xyline,ref_answer=True)
             LL  = 0
-            corr      = 0
             for e in range(epochs):
                 try:
                     LL = self.sgd_train_one(beam_size,X,Y,lr=lr)
@@ -730,7 +730,7 @@ class CCGParser :
             try:
                 res = self.eval_one(beam_size,X,Y)
             except ParseFailureError as p:
-                corr = False
+                res = False
             corr += res
             print('\ncorrect' if corr else '\nincorrect')
         print('overall accurracy (#parse success)',corr/N)
