@@ -165,6 +165,7 @@ def make_variantes(first_entfilename):
 	 """
 	entfilestream = open(first_entfilename) 
 	stop_words = ['Q2865743','P585','Q397','Q744346','Q2865743','Q684','Q33350','Q1811','Q33947','Q188', 'P642','Q1801','Q27956604','Q131068','Q850088','Q2559220','Q1385','Q208141','Q897','Q66254','Q758379','Q506881','Q261494','Q279014','Q876','Q6452640','Q20085828','Q42614']
+	wh_words = ['Q2304610','Q6125402','Q575953','Q380012']
 
 	D   = { }
 	dico_bridging = { }
@@ -175,7 +176,7 @@ def make_variantes(first_entfilename):
 			entity = json.loads(entity)
 			idx    = entity['id']
 
-			if idx not in stop_words:
+			if idx not in stop_words and idx not in wh_words:
 				if 'bridging' in entity:
 					dico_bridging[idx] = entity['bridging']
 				elif idx[0]=='P':
