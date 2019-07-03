@@ -11,7 +11,7 @@ from functional_core import TypeSystem
 from wikidata_model import WikidataModelInterface,NamingContextWikidata
 import pytrie
 from pytrie import SortedStringTrie as Trie
-
+import datetime
 
 class Token:
 	
@@ -162,16 +162,20 @@ class DefaultLexer:
   
 		#Reference answers
 		if ref_answer:
-			janswer     = jline['targetValue'].strip()
-			janswer      = janswer[6:-1] #strips outer (list ... )
-			answer_list = []
-			pattern = re.compile(r'\(description ([^\)]+)\)')
-			for answ_match in pattern.finditer(janswer):
-				answ = answ_match.group(1)
-				if answ[0] == '"' and answ[-1] == '"':
-					answ = answ[1:-1]
-				answer_list.append(answ)
-        print('Answ',answer_list)
+ 			janswer     = jline['targetValue'].strip()
+ 			answer_list = []
+ 			for answer in janswer.split(','):
+ 				 answer_list.append(answer)
+			#janswer     = jline['targetValue'].strip()
+			#janswer      = janswer[6:-1] #strips outer (list ... )
+			#answer_list = []
+			#pattern = re.compile(r'\(description ([^\)]+)\)')
+			#for answ_match in pattern.finditer(janswer):
+			#	answ = answ_match.group(1)
+			#	if answ[0] == '"' and answ[-1] == '"':
+			#		answ = answ[1:-1]
+			#	answer_list.append(answ)
+
 		return (tokens,answer_list)
 		 
 	def tokenize_line(self,line):
@@ -281,7 +285,7 @@ class DefaultLexer:
 		self.wsp_regex = re.compile("([ \n\s\t]+)")
 		self.full_regex = re.compile("([^ \n\s\t]+)")
 
-	def compile_mwe(self,filename,max_vocab_size=500913):
+	def compile_mwe(self,filename,max_vocab_size=545913):
 		# max_vocab_size=4459136
 		self.entity_dict = {}
 		if filename:
@@ -289,6 +293,7 @@ class DefaultLexer:
 			keylist = {}
 			idx = 0
 			line = istream.readline()
+			print(datetime.datetime.now())
 			while line:
 				line    = json.loads(line)
 				key     = line['named_entity']
@@ -300,9 +305,11 @@ class DefaultLexer:
 				if idx > max_vocab_size:
 				   break
 				line = istream.readline()
+			print(datetime.datetime.now())
 
 			#self.mwe_regex = sorted(keylist,reverse=True,key=lambda x:len(x))
 			self.mwe_regex = Trie(keylist)
+			print(datetime.datetime.now())
 			istream.close() 
 		else:
 			self.mwe_regex = None
