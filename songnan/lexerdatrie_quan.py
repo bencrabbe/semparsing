@@ -17,7 +17,7 @@ import datetime
 
 class Token:
 	
-	def __init__(self,wform,ptag,logmacro,logform):
+	def __init__(self,wform,ptag,logmacro,logform,bridging):
 		"""
 		Args:
 			wform              (string) : the raw string
@@ -30,6 +30,7 @@ class Token:
 		self.logical_macro = logmacro
 		self.logical_form  = logform
 		self.logical_type  = TypeSystem.typecheck(logform)  if logform else None
+		self.bridging      = bridging
 
 	def is_predicate(self):
 		return not self.logical_macro is None and self.logical_macro[0] == 'P'
@@ -91,6 +92,7 @@ class Tokenizer:
 class DefaultLexer:
 	
 	def __init__(self,cpd_file,entity_file=None,trie_file=None):
+		self.bridging = {}
 		self.compile_regexes()
 		self.compile_cpd(cpd_file)
 		self.mwe_regex = None
@@ -107,6 +109,7 @@ class DefaultLexer:
 
 		self.and_words = set(['et'])
 		self.or_words  = set(['ou'])
+
 
 	def tokenize_json(self,line,ref_answer=False): 
 		"""
@@ -160,7 +163,7 @@ class DefaultLexer:
 			elif tokform in self.wh_words:
 				 qmacro   = 'WHQ'
 				 qlogform = self.wh_term.copy()  
-			tokens.append( Token(tokform,"NOTAG",qmacro,qlogform)) 
+			tokens.append( Token(tokform,"NOTAG",qmacro,qlogform,[self.bridging[idx] for idx in qmacro]) ) 
   
 		#Reference answers
 		if ref_answer:
@@ -220,7 +223,7 @@ class DefaultLexer:
 				token       = self.inner_bfr[self.idx:( self.idx + len(match) )]
 				self.idx    = ( self.idx + len(match) )
 				entity_list = self.entity_dict.get(token, [] )
-				return ( token, entity_list ) 
+				return ( token, entity_list, [self.bridging[entity] for entity in entity_list] ) 
  
 		#2 and #3 should be swapped ?
 		
@@ -306,6 +309,8 @@ class DefaultLexer:
 					line    = json.loads(line)
 					key     = line['named_entity']         # string of this word
 					vallist = list(line['entity_list'])    # all Qs or Ps for this string
+					self.bridging.update(line['entity_list'])
+
 					self.entity_dict[key] = vallist
 					if ' ' in key:
 						self.mwe_regex[key] = idx
@@ -317,12 +322,14 @@ class DefaultLexer:
 				print(datetime.datetime.now())
 				self.mwe_regex.save('my.trie')
 				print(datetime.datetime.now())
+
 			else:
 				while line:
 					line    = json.loads(line)
 					key     = line['named_entity']         # string of this word
 					vallist = list(line['entity_list'])    # all Qs or Ps for this string
 					self.entity_dict[key] = vallist
+					self.bridging.update(line['entity_list'])
 					idx += 1
 					if idx > max_vocab_size:
 						break
