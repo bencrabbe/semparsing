@@ -39,7 +39,7 @@ class Token:
 		return  not self.logical_macro is None and self.logical_macro[0] == 'Q'
 		
 	def __str__(self):
-		return "%s/%s"%(self.form,self.logical_macro)
+		return "%s/%s/%s"%(self.form,self.logical_macro,self.bridging)
 
 	
 class Tokenizer:
@@ -163,7 +163,7 @@ class DefaultLexer:
 			elif tokform in self.wh_words:
 				 qmacro   = 'WHQ'
 				 qlogform = self.wh_term.copy()  
-			tokens.append( Token(tokform,"NOTAG",qmacro,qlogform,[self.bridging[idx] for idx in qmacro]) ) 
+			tokens.append( Token(tokform,"NOTAG",qmacro,qlogform,self.bridging[qmacro] ) ) 
   
 		#Reference answers
 		if ref_answer:
@@ -223,7 +223,7 @@ class DefaultLexer:
 				token       = self.inner_bfr[self.idx:( self.idx + len(match) )]
 				self.idx    = ( self.idx + len(match) )
 				entity_list = self.entity_dict.get(token, [] )
-				return ( token, entity_list, [self.bridging[entity] for entity in entity_list] ) 
+				return ( token, entity_list ) 
  
 		#2 and #3 should be swapped ?
 		
