@@ -2,6 +2,7 @@
 
 """
 Dummy lexer, this is basically a translation with slight variations of the C++ version used in nlp-toolbox
+Implemented with RegEx
 """
 import re
 import json

@@ -1,41 +1,28 @@
 #! /usr/bin/env python
 
-"""
-This module includes functions for calculating the pagerank for items of Wikidata via
-a directed graph and for building a lexicon as a dictionnary.
-
-(!) Time consuming and heavy ops due to large amounts of data.
-Uses pytables (tables) as backend.    
-"""
-
 import gzip,bz2,json,sys,re
 import urllib.request
-#from lexer import DefaultLexer
-
 
 
 def extract_entities(dumpfile,out_file,lang='fr'):
 	"""
 	Reads entities from a json.gz wikidata dump and filters out irrelevant entities.
-	Stores the result in an HDF5 file
+	Stores the result of all human names in a json file
 
 	That is an heavy operation (takes several hours).
 
 	Args:
 	   dumpfile      (string): a bzipped wikidata json filename
+	   outfile       (string): the output json file
 	Kwargs:
-	   lang     (string): language code of the language to extract
-	Returns:
-		a string, the name of the generated hdf5 table
-	See also:  
-		https://www.mediawiki.org/wiki/Wikibase/DataModel/JSON
+	   lang          (string): language code of the language to extract
 	"""
 
 	# open the files
 	#wikistream     = open(dumpfile)
 	wikistream     = bz2.open(dumpfile)
 	outstream      = open(out_file,"w")
-	list_human = ['Q5','Q3658341','Q15773347','Q95074']
+	list_human = ['Q5','Q3658341','Q15773347','Q95074'] # standard of human
 	
 	def ishuman(entity):
 		"""

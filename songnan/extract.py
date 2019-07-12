@@ -5,8 +5,13 @@ from lexerpytrie_quan import DefaultLexer
 
 def page_rank_dict(pagerankfilename):
 	"""
-	Reads in the content of the page rank file
-	and returns a dict : entity -> rank
+	Reads in the content of the page rank file and returns a dictionnary of PageRank
+
+	Args:
+	   pagerankfilename   (string): a bzipped wikidata json filename
+	Returns:
+		a dictionnary, key = id of the item in Wikidata, value = PageRank score
+
 	"""
 	pr_dict = {}
 	prstream = open(pagerankfilename)
@@ -20,13 +25,6 @@ def page_rank_dict(pagerankfilename):
 	pr_dict = sorted(pr_dict.items(),key=lambda x:x[1], reverse=True)
 	pr_dict = dict([(entity,i) for i,(entity,_) in enumerate(pr_dict)])
 
-	"""
-	print("==========================================================")
-	for ent in pr_dict:
-		print(ent,pr_dict[ent])
-	print("==========================================================")
-	"""	
-
 	print("dict pagerank done")
 	return pr_dict
 
@@ -36,17 +34,15 @@ def extract_entities(dumpfile,outfile,page_ranks,lang='fr'):
 	Reads entities from a json.gz wikidata dump and filters out irrelevant entities.
 	Stores the result in an HDF5 file
 
-	That is an heavy operation (takes several hours).
+	That is an heavy operation (takes several hours). 
+	So results already stored in "dico_entities_1.json" and "dico_entities_1.json".
 
 	Args:
-	   dumpfile      (string): a bzipped wikidata json filename
-	   h5filename    (string): name of the HDF5 file name
+	   dumpfile         (string): a bzipped wikidata json filename
+	   outfile          (string): name of the HDF5 file name
+	   pageranks   (dictionnary): dictionnary of PageRank score
 	Kwargs:
 	   lang     (string): language code of the language to extract
-	Returns:
-		a string, the name of the generated hdf5 table
-	See also:  
-		https://www.mediawiki.org/wiki/Wikibase/DataModel/JSON
 	"""
 
 	# open the files
@@ -98,6 +94,17 @@ def extract_entities(dumpfile,outfile,page_ranks,lang='fr'):
 
 
 def make_dictionary(jsonfilename,outfilename,max_size=1000000):
+	"""
+	read usable items pre-extracted from Wikidata, and get the items with a higher PageRank score
+
+	Args:
+	   jsonfilename   (string): name of file containing usable items pre-extracted from Wikidata
+	   outfilename    (string): name of the output file
+	Kwargs:
+	   max_size       (int)   : the number of items that we want to extract
+
+	"""
+
 	jsonstream = open(jsonfilename)
 	outstream = open(outfilename,"w")
 	list_entities = []
@@ -121,6 +128,8 @@ def make_dictionary(jsonfilename,outfilename,max_size=1000000):
 
 
 def plural_en(word):
+	# pluralization of English
+
 	if word.endswith('y'):
 		return word[:-1] + 'ies'
 	elif word[-1] in 'sx' or word[-2:] in ['sh', 'ch']:
@@ -132,6 +141,16 @@ def plural_en(word):
 
 
 def creat_variants(dico_labelaliases):
+	"""
+	Generate variants of the items in Wikidata (mini/majuscule, pluriel)
+
+	Args:
+	   dico_labelaliases   (dictionnary): contains items whose variants need to be generated
+	Returns:
+		a set, which contains all the variants of the given dictionnairy
+
+	"""
+
 	set_result = set()
 	# enlabel mini/majuscule
 	set_result.update( [ dico_labelaliases['enlabel'],dico_labelaliases['enlabel'].lower(), dico_labelaliases['enlabel'].title(), dico_labelaliases['enlabel'].capitalize()] )
@@ -141,7 +160,7 @@ def creat_variants(dico_labelaliases):
 	# frlabel mini/majuscule
 	if 'frlabel' in dico_labelaliases:
 		set_result.update( [ dico_labelaliases['frlabel'],dico_labelaliases['frlabel'].lower(), dico_labelaliases['frlabel'].title(), dico_labelaliases['frlabel'].capitalize()] )
-	# frlabel pluriel
+	# frlabel pluriel (not implemented)
 
 	# fraliase mini/majuscule
 	if 'fraliase' in dico_labelaliases:
@@ -155,15 +174,19 @@ def creat_variants(dico_labelaliases):
 
 def make_variantes(first_entfilename):
 	"""
-	Builds the dictionary from an entity list.
-	For a given entry, entities are sorted according to elist's order
+	Generate the variants of the given items
+
 	Args: 
-	   h5filename (string): the name of the HF5 file as a string
-	   max_size (unsigned): the max number of entities in the dictionary
+	   first_entfilename (string): the name of the first XXX items in Wikidata
 	Return:
-	   a python dictionary string -> ordered list of Qxxx IDs
-	 """
+	   2 dictionnaries
+	   		first  : string -> list of id
+	   		second : id -> bridging
+
+	"""
+
 	entfilestream = open(first_entfilename) 
+	# list of stop words and wh-words
 	stop_words = ['Q2865743','P585','Q397','Q744346','Q2865743','Q684','Q33350','Q1811','Q33947','Q188', 'P642','Q1801','Q27956604','Q131068','Q850088','Q2559220','Q1385','Q208141','Q897','Q66254','Q758379','Q506881','Q261494','Q279014','Q876','Q6452640','Q20085828','Q42614']
 	wh_words = ['Q2304610','Q6125402','Q575953','Q380012']
 

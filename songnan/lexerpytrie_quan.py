@@ -2,6 +2,7 @@
 
 """
 Dummy lexer, this is basically a translation with slight variations of the C++ version used in nlp-toolbox
+Implemented with pytrie
 """
 import re
 import json

@@ -101,7 +101,7 @@ def extract_entities(dumpfile,h5filename,graphfilename,lang='fr'):
 	"""
 
 	# open the files
-	wikistream     = open(dumpfile)
+	wikistream     = bz2.open(dumpfile)
 	h5file        = open_file(h5filename, mode="a")
 	graphfi       = open(graphfilename,"w")
 	etable        = h5file.root.dbgroup.entities
@@ -155,7 +155,7 @@ def extract_entities(dumpfile,h5filename,graphfilename,lang='fr'):
 	entity = wikistream.readline() #skip init 
 	entity = wikistream.readline()
 	while entity:
-		entity = entity[:-2]
+		entity = entity.decode('utf-8')[:-2]
 		if entity and entity[0] == '{':
 			try :
 				entity = json.loads(entity)
@@ -297,11 +297,13 @@ def calculate_pagerank(out_file, list_c2i, prfilename):
 
 
 if __name__ == '__main__':
-	dumpname = "wikidata-20180101-all.json"
-	#h5filename = create_wikidata_subsetfile(dumpname)
+	dumpname = "wikidata-20180101-all.json.bz2"
+	h5filename = create_wikidata_subsetfile(dumpname)
 	graphfilename = "graph-0430.txt"
 
-	h5filename = "wikidata-20180101-all.h5"
+
+"""
+	h5filename = "wikidata-20180101-all.json.h5"
 	extract_entities(dumpname, h5filename, graphfilename, lang="fr")
 
 	dicoidx_file = "dico_e2c_c2e.txt"
@@ -324,7 +326,7 @@ if __name__ == '__main__':
 	calculate_pagerank(out_file2, list_c2i, prfilename2)
 	print("all finished")
 	
-	
+"""
 
 
 
