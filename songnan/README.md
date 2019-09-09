@@ -68,6 +68,20 @@
 	how to use: "python3 semparser", can change the name of file to test in line 745
 	(p.eval_songnan('xxx.json',beam_size=500,lr=1.0,epochs=5), xxx can be: simple/bridging/introuvable/total.json)
 
+## corpus of questions
+	squan@clc-alpage-1.linguist.univ-paris-diderot.fr:/data/squan/test
+
+	corpus finished: 500 questions (total.json)
+	simple.json (74 qs)
+	bridging.json (143 qs)
+	introuvable.json (283 qs), including 188 introuvable, 88 QNF, 7 ENexistepass
+	500.json, contains all 500 questions
+
+	instruction.md: an instruction of annotation for the questions
+	
+	
+
+	
 
 
 
